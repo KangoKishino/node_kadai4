@@ -21,8 +21,8 @@ app.use(cookieParser());
 app.get('/', userController.getSignUpPage);
 app.get('/dashboard', userController.auth, userController.getDashboardPage);
 app.get('/signout', userController.removeAuth, userController.getSignInPage);
-app.post('/signup', validateController.validateUser, userController.createUser, userController.createJWT);
-app.post('/signin', userController.checkSignIn, userController.createJWT);
-app.get('/signin', userController.getSignInPage, userController.getDashboardPage);
+app.post('/signup', validateController.validateUser, userController.createUser, userController.createJWT, userController.getDashboardPage);
+app.post('/signin', userController.checkSignIn, userController.createJWT, userController.getDashboardPage);
+app.get('/signin', userController.getSignInPage);
 
 module.exports = app;

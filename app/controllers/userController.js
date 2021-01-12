@@ -3,7 +3,9 @@
 const db = require('../models');
 const { validationResult } = require('express-validator');
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "abcdefg";
+const bcrypt = require('bcrypt');
+const secretKey = process.env.SECRET_KEY;
+const expireTime = process.env.EXPIRE_TIME;
 
 exports.getSignUpPage = (req, res) => {
     res.render('signup', {
@@ -17,10 +19,14 @@ exports.getSignInPage = (req, res) => {
 };
 
 exports.getDashboardPage = (req, res) => {
-    console.log(req.decoded);
-    res.render('dashboard', {
-        user: req.decoded.name,
-    });
+    db.Users.findOne({
+        where: {id: req.user.id}
+    })
+        .then((user) => {
+            res.render('dashboard', {
+                user: user.name,
+            });
+        });
 };
 
 exports.createUser = (req, res, next) => {
@@ -30,10 +36,11 @@ exports.createUser = (req, res, next) => {
             input: req.body,
             error: errors.array()[0].msg });
     }
+    const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     const newUser = db.Users.build({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: hashedPassword
     });
     newUser
         .save()
@@ -54,36 +61,34 @@ exports.checkSignIn = (req, res, next) => {
         where: {email: req.body.email}
     })
         .then((user) => {
-            if(!user.dataValues || user.dataValues.password !== req.body.password) {
+            if(user.dataValues && bcrypt.compareSync(req.body.password, user.dataValues.password)) {
+                req.user = user;
+                next();
+            } else {
                 res.redirect('/signin');
             }
-            req.user = user;
-            next();
-            
         });
 }
 
-exports.createJWT = (req, res) => {
+exports.createJWT = (req, res, next) => {
     const payload = {
-        name: req.user.name
+        id: req.user.id
     };
     const option = {
-        expiresIn: '1m'
+        expiresIn: expireTime
     }
-    const token = jwt.sign(payload, SECRET_KEY, option);
+    const token = jwt.sign(payload, secretKey, option);
     res.cookie('token', token, {maxAge:60000, httpOnly:false});
-    res.render('dashboard', {
-        user: req.user.name
-    });
+    next();
 }
 
 exports.auth = (req, res, next) => {
     const token = req.cookies.token;
-    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, secretKey, (err, decoded) => {
         if (err) {
             res.redirect('/signin');
         } else {
-            req.decoded = decoded;
+            req.user = decoded;
             next();
         }
     });
