@@ -18,13 +18,15 @@ exports.getSignInPage = (req, res) => {
     res.render('signin');
 };
 
-exports.getDashboardPage = (req, res) => {
+exports.getDashboardPage = async (req, res) => {
+    const boards = await db.Boards.findAll();
     db.Users.findOne({
         where: {id: req.user.id}
     })
         .then((user) => {
             res.render('dashboard', {
-                user: user.name,
+                user: user,
+                boards: boards
             });
         });
 };
@@ -72,7 +74,8 @@ exports.checkSignIn = (req, res, next) => {
 
 exports.createJWT = (req, res, next) => {
     const payload = {
-        id: req.user.id
+        id: req.user.id,
+        name: req.user.name
     };
     const option = {
         expiresIn: expireTime

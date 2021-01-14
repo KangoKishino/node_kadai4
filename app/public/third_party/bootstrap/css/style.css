@@ -37,3 +37,16 @@ table {
 .error {
     color: red;
 }
+
+.like {
+    display: inline-block;
+}
+
+.new {
+    width: 100%;
+}
+
+.new-form p {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
