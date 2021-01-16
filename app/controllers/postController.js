@@ -3,7 +3,7 @@
 const db = require('../models');
 const { validationResult } = require('express-validator');
 
-exports.getNewPage = (req, res) => {
+exports.getNewPage = (req, res, next) => {
     db.Users.findOne({
         where: {id: req.user.id}
     })
@@ -13,10 +13,14 @@ exports.getNewPage = (req, res) => {
                 user: user.name,
                 error: ''
             });
+            res.status(200);
+        })
+        .catch((error) => {
+            next(error);
         });
 };
 
-exports.newBoard = async (req, res, next) => {
+exports.newPost = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return res.render('new', { 
@@ -25,70 +29,79 @@ exports.newBoard = async (req, res, next) => {
             error: errors.array()[0].msg
         });
     }
-    const newBoard = await db.Boards.build({
+    const newPost = await db.Posts.build({
         title: req.body.title,
         text: req.body.text,
         userId: req.user.id,
         userName: req.user.name,
         like: 0
     });
-    newBoard
+    newPost
         .save()
-            .then(() => {
-                next();
-            })
-            .catch(() => {
-                res.render('new', { 
-                    input: req.body,
-                    user: req.user.name,
-                    error: ''
-                });
-            });
-};
-
-exports.edit = (req, res) => {
-    db.Boards.findOne({
-        where: {id: req.params.boardId}
-    })
-        .then((board) => {
-            res.render('edit', {
-                input: board,
-                boardId: req.params.boardId,
+        .then(() => {
+            next();
+        })
+        .catch(() => {
+            res.render('new', { 
+                input: req.body,
                 user: req.user.name,
                 error: ''
             });
         });
+};
+
+exports.edit = (req, res, next) => {
+    db.Posts.findOne({
+        where: {id: req.params.postId}
+    })
+        .then((post) => {
+            res.render('edit', {
+                input: post,
+                postId: req.params.postId,
+                user: req.user.name,
+                error: ''
+            });
+        })
+        .catch((error) => {
+            next(error);
+        });
     
 }
 
-exports.updateBoard = async (req, res, next) => {
+exports.updatePost = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return res.render('edit', { 
             input: req.body,
-            boardId: req.params.boardId,
+            postId: req.params.postId,
             user: req.user.name,
             error: errors.array()[0].msg
         });
     }
-    const boardId = req.params.boardId;
-    await db.Boards.update({ 
+    const postId = req.params.postId;
+    await db.Posts.update({ 
         title: req.body.title,
         text: req.body.text
     },
-        { where: { id: boardId }
+        { where: { id: postId }
     })
         .then(() => {
             next();
+        })
+        .catch((error) => {
+            next(error);
         });
 }
 
-exports.deleteBoard = (req, res, next) => {
-    const boardId = req.params.boardId;
-    db.Boards.destroy({
-        where: { id: boardId }
+exports.deletePost = (req, res, next) => {
+    const postId = req.params.postId;
+    db.Posts.destroy({
+        where: { id: postId }
     })
         .then(() => {
             next();
+        })
+        .catch((error) => {
+            next(error);
         });
 }

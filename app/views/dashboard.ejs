@@ -27,17 +27,17 @@
                 </div>
             </div>
         </nav>
-        <% for(let i = 0; i < boards.length; i++) { %>
+        <% for(let i = 0; i < posts.length; i++) { %>
             <div class="container">
                 <div class="group">
-                    <h5><%= boards[i].title %></h5>
-                    <p><%= boards[i].text %></p>
-                    <p>投稿者：<%= boards[i].userName %></p>
-                    <i class="material-icons">favorite_border</i><p class="like"><%= boards[i].like %></p>
-                    <% if(boards[i].userId === user.id) { %>
+                    <h5><%= posts[i].title %></h5>
+                    <p><%= posts[i].text %></p>
+                    <p>投稿者：<%= posts[i].userName %></p>
+                    <i class="material-icons">favorite_border</i><p class="like"><%= posts[i].like %></p>
+                    <% if(posts[i].userId === user.id) { %>
                         <div>
-                            <button type="button" class="btn btn-primary rounded-pill" onclick="location.href='<%=`/${boards[i].id}/edit`%>'">編集</button>
-                            <button type="button" class="btn btn-outline-danger rounded-pill" onclick="location.href='<%=`/${boards[i].id}/delete?_method=DELETE`%>'">削除</button>
+                            <button type="button" class="btn btn-primary rounded-pill" onclick="location.href='<%=`/${posts[i].id}/edit`%>'">編集</button>
+                            <button type="button" class="btn btn-outline-danger rounded-pill" onclick="location.href='<%=`/${posts[i].id}/delete?_method=DELETE`%>'">削除</button>
                         </div>
                     <% } %>
                 </div>

@@ -15,7 +15,7 @@ exports.validateUser = [
         })
 ];
 
-exports.validateBoard = [
+exports.validatePost = [
     check('title').isLength({ max:140 }).withMessage('Title exceeded 140 characters'),
     check('text').not().isEmpty().withMessage('Content is required item').isLength({ max:140 }).withMessage('Content exceeded 140 characters'),
 ];

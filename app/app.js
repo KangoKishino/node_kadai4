@@ -6,8 +6,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const methodOverride = require("method-override");
 const userController = require('./controllers/userController');
-const boardController = require('./controllers/boardController');
+const postController = require('./controllers/postController');
 const validateController = require('./controllers/validateController');
+const errorController = require('./controllers/errorController');
 
 const app = express();
 
@@ -32,10 +33,13 @@ app.get('/signout', userController.removeAuth, userController.getSignInPage);
 app.post('/signup', validateController.validateUser, userController.createUser, userController.createJWT, userController.getDashboardPage);
 app.post('/signin', userController.checkSignIn, userController.createJWT, userController.getDashboardPage);
 app.get('/signin', userController.getSignInPage);
-app.get('/new', userController.auth, boardController.getNewPage);
-app.post('/new', validateController.validateBoard, userController.auth, boardController.newBoard, userController.getDashboardPage);
-app.get('/:boardId/edit', userController.auth, boardController.edit);
-app.put('/:boardId/update', validateController.validateBoard, userController.auth, boardController.updateBoard, userController.getDashboardPage);
-app.delete('/:boardId/delete', userController.auth, boardController.deleteBoard, userController.getDashboardPage);
+app.get('/new', userController.auth, postController.getNewPage);
+app.post('/new', validateController.validatePost, userController.auth, postController.newPost, userController.getDashboardPage);
+app.get('/:postId/edit', userController.auth, postController.edit);
+app.put('/:postId/update', validateController.validatePost, userController.auth, postController.updatePost, userController.getDashboardPage);
+app.delete('/:postId/delete', userController.auth, postController.deletePost, userController.getDashboardPage);
+
+app.use(errorController.pageNotFoundError);
+app.use(errorController.internalServerError);
 
 module.exports = app;
