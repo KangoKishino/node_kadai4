@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Signin</title>
+        <link rel="stylesheet" href="/public/third_party/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="/public/third_party/bootstrap/css/style.css">
+    </head>
+    <body>
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand">Node.js Lesson4</a>
+            <div class="form-inline my-2 my-lg-0">
+                <div class="nav-item">
+                    <a class="nav-link" href="/dashboard">みんなの投稿</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" href="/new">投稿を作成</a>
+                </div>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <%= user %>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/signout">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="container group">
+        <form class="new-form" action="/new" method="post">
+            <p>タイトル</p>
+            <input type="text" class="new" name="title" value="<%= input.title %>">
+            <p>コンテンツ</p>
+            <textarea name="text" class="new" rows="4"><%= input.text %></textarea>
+            <p class="error"><%= error %></p>
+            <div>
+                <input type="submit" class="btn btn-primary" value="新規投稿">
+            </div>
+        </form>
+        </div>
+    </body>
+</html>

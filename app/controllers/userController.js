@@ -18,14 +18,19 @@ exports.getSignInPage = (req, res) => {
     res.render('signin');
 };
 
-exports.getDashboardPage = (req, res) => {
+exports.getDashboardPage = async (req, res, next) => {
+    const posts = await db.Posts.findAll();
     db.Users.findOne({
         where: {id: req.user.id}
     })
         .then((user) => {
             res.render('dashboard', {
-                user: user.name,
+                user: user,
+                posts: posts
             });
+        })
+        .catch((error) => {
+            next(error);
         });
 };
 
@@ -44,16 +49,16 @@ exports.createUser = (req, res, next) => {
     });
     newUser
         .save()
-            .then(() => {
-                req.user = newUser;
-                next();
-            })
-            .catch(() => {
-                res.render('signup', {
-                    input: req.body,
-                    error: 'Email is already in use'
-                });
+        .then(() => {
+            req.user = newUser;
+            next();
+        })
+        .catch(() => {
+            res.render('signup', {
+                input: req.body,
+                error: 'Email is already in use'
             });
+        });
 };
 
 exports.checkSignIn = (req, res, next) => {
@@ -67,12 +72,16 @@ exports.checkSignIn = (req, res, next) => {
             } else {
                 res.redirect('/signin');
             }
+        })
+        .catch(() => {
+            res.redirect('/signin');
         });
 }
 
 exports.createJWT = (req, res, next) => {
     const payload = {
-        id: req.user.id
+        id: req.user.id,
+        name: req.user.name
     };
     const option = {
         expiresIn: expireTime
