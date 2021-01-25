@@ -33,11 +33,20 @@
                     <h5><%= posts[i].title %></h5>
                     <p><%= posts[i].text %></p>
                     <p>投稿者：<%= posts[i].userName %></p>
-                    <i class="material-icons">favorite_border</i><p class="like"><%= posts[i].like %></p>
+                    <% let isLike = false; %>
+                    <% for(let j = 0; j < likes.length; j++) { %>
+                        <% if(likes[j] === posts[i].id) isLike = true; %>
+                    <% } %>
+                    <% if(isLike) { %>
+                        <i class="material-icons" onclick="location.href='<%=`/${posts[i].id}/dislike?_method=POST`%>'">favorite</i>
+                    <% } else { %>
+                        <i class="material-icons" onclick="location.href='<%=`/${posts[i].id}/like?_method=POST`%>'">favorite_border</i>
+                    <% } %>
+                    <p class="like"><%= posts[i].like %></p>
                     <% if(posts[i].userId === user.id) { %>
                         <div>
-                            <button type="button" class="btn btn-primary rounded-pill" onclick="location.href='<%=`/${posts[i].id}/edit`%>'">編集</button>
-                            <button type="button" class="btn btn-outline-danger rounded-pill" onclick="location.href='<%=`/${posts[i].id}/delete?_method=DELETE`%>'">削除</button>
+                            <button type="button" class="btn btn-primary rounded-pill cursor" onclick="location.href='<%=`/${posts[i].id}/edit`%>'">編集</button>
+                            <button type="button" class="btn btn-outline-danger rounded-pill cursor" onclick="location.href='<%=`/${posts[i].id}/delete?_method=DELETE`%>'">削除</button>
                         </div>
                     <% } %>
                 </div>

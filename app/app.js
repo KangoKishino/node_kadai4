@@ -7,6 +7,7 @@ const logger = require('morgan');
 const methodOverride = require("method-override");
 const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
+const likeController = require('./controllers/likeController');
 const validateController = require('./controllers/validateController');
 const errorController = require('./controllers/errorController');
 
@@ -37,7 +38,9 @@ app.get('/new', userController.auth, postController.getNewPage);
 app.post('/new', validateController.validatePost, userController.auth, postController.newPost, userController.getDashboardPage);
 app.get('/:postId/edit', userController.auth, postController.edit);
 app.put('/:postId/update', validateController.validatePost, userController.auth, postController.updatePost, userController.getDashboardPage);
-app.delete('/:postId/delete', userController.auth, postController.deletePost, userController.getDashboardPage);
+app.delete('/:postId/delete', userController.auth, postController.deletePost, likeController.deleteLike, userController.getDashboardPage);
+app.post('/:postId/like', userController.auth, postController.changeLike, likeController.changeLike, userController.getDashboardPage);
+app.post('/:postId/dislike', userController.auth, postController.changeDislike, likeController.changeDislike, userController.getDashboardPage);
 
 app.use(errorController.pageNotFoundError);
 app.use(errorController.internalServerError);
