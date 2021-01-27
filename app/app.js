@@ -39,8 +39,8 @@ app.post('/new', validateController.validatePost, userController.auth, postContr
 app.get('/:postId/edit', userController.auth, postController.edit);
 app.put('/:postId/update', validateController.validatePost, userController.auth, postController.updatePost, userController.getDashboardPage);
 app.delete('/:postId/delete', userController.auth, postController.deletePost, likeController.deleteLike, userController.getDashboardPage);
-app.post('/:postId/like', userController.auth, postController.changeLike, likeController.changeLike, userController.getDashboardPage);
-app.post('/:postId/dislike', userController.auth, postController.changeDislike, likeController.changeDislike, userController.getDashboardPage);
+app.post('/:postId/like', userController.auth, likeController.changeLike, userController.getDashboardPage);
+app.post('/:postId/dislike', userController.auth, likeController.changeDislike, userController.getDashboardPage);
 
 app.use(errorController.pageNotFoundError);
 app.use(errorController.internalServerError);

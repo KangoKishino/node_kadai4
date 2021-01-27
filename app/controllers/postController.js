@@ -33,8 +33,7 @@ exports.newPost = async (req, res, next) => {
         title: req.body.title,
         text: req.body.text,
         userId: req.user.id,
-        userName: req.user.name,
-        like: 0
+        userName: req.user.name
     });
     newPost
         .save()
@@ -99,32 +98,6 @@ exports.deletePost = (req, res, next) => {
         where: { id: postId }
     })
         .then(() => {
-            next();
-        })
-        .catch((error) => {
-            next(error);
-        });
-}
-
-exports.changeLike = async (req, res, next) => {
-    await db.Posts.findOne({
-        where: {id: req.params.postId}
-    })
-        .then((post) => {
-            req.post = post;
-            next();
-        })
-        .catch((error) => {
-            next(error);
-        });
-}
-
-exports.changeDislike = async (req, res, next) => {
-    await db.Posts.findOne({
-        where: {id: req.params.postId}
-    })
-        .then((post) => {
-            req.post = post;
             next();
         })
         .catch((error) => {
