@@ -111,8 +111,6 @@ exports.changeLike = async (req, res, next) => {
         where: {id: req.params.postId}
     })
         .then((post) => {
-            post.like = post.like + 1;
-            post.save();
             req.post = post;
             next();
         })
@@ -126,8 +124,6 @@ exports.changeDislike = async (req, res, next) => {
         where: {id: req.params.postId}
     })
         .then((post) => {
-            post.like = post.like - 1;
-            post.save();
             req.post = post;
             next();
         })
