@@ -20,17 +20,25 @@ exports.getSignInPage = (req, res) => {
 
 exports.getDashboardPage = async (req, res, next) => {
     const posts = await db.Posts.findAll();
-    db.Users.findOne({
+    await db.Users.findOne({
         where: {id: req.user.id}
     })
         .then((user) => {
-            res.render('dashboard', {
-                user: user,
-                posts: posts
-            });
-        })
-        .catch((error) => {
-            next(error);
+            db.Likes.findAll({where: {userId: user.id}})
+                .then((likes) => {
+                    let likeList = [];
+                    for(let i = 0; i < likes.length; i++) {
+                        likeList.push(likes[i].postId);
+                    }
+                    res.render('dashboard', {
+                        user: req.user,
+                        posts: posts,
+                        likes: likeList
+                    });
+                })
+                .catch((error) => {
+                    next(error);
+                });
         });
 };
 

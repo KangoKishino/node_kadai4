@@ -12,7 +12,7 @@ module.exports = {
           text: 'World',
           userId: 1,
           userName: 'a',
-          like: 0,
+          like: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

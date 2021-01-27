@@ -105,3 +105,33 @@ exports.deletePost = (req, res, next) => {
             next(error);
         });
 }
+
+exports.changeLike = async (req, res, next) => {
+    await db.Posts.findOne({
+        where: {id: req.params.postId}
+    })
+        .then((post) => {
+            post.like = post.like + 1;
+            post.save();
+            req.post = post;
+            next();
+        })
+        .catch((error) => {
+            next(error);
+        });
+}
+
+exports.changeDislike = async (req, res, next) => {
+    await db.Posts.findOne({
+        where: {id: req.params.postId}
+    })
+        .then((post) => {
+            post.like = post.like - 1;
+            post.save();
+            req.post = post;
+            next();
+        })
+        .catch((error) => {
+            next(error);
+        });
+}
