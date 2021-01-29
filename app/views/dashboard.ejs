@@ -34,15 +34,17 @@
                     <p><%= posts[i].text %></p>
                     <p>投稿者：<%= posts[i].userName %></p>
                     <% let isLike = false; %>
+                    <% let sumLike = 0; %>
                     <% for(let j = 0; j < likes.length; j++) { %>
-                        <% if(likes[j] === posts[i].id) isLike = true; %>
+                        <% if(likes[j].postId === posts[i].id && user.id === likes[j].userId) isLike = true; %>
+                        <% if(likes[j].postId === posts[i].id) sumLike++ %>
                     <% } %>
                     <% if(isLike) { %>
                         <i class="material-icons" onclick="location.href='<%=`/${posts[i].id}/dislike?_method=POST`%>'">favorite</i>
                     <% } else { %>
                         <i class="material-icons" onclick="location.href='<%=`/${posts[i].id}/like?_method=POST`%>'">favorite_border</i>
                     <% } %>
-                    <p class="like"><%= posts[i].like %></p>
+                    <p class="like"><%= sumLike %></p>
                     <% if(posts[i].userId === user.id) { %>
                         <div>
                             <button type="button" class="btn btn-primary rounded-pill cursor" onclick="location.href='<%=`/${posts[i].id}/edit`%>'">編集</button>
